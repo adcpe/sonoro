@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: sonoro-backend
+    ports:
+      - '8000:8000'
+    volumes:
+      # Mount backend code so changes are reflected without rebuild
+      - ./backend/app:/app/app
+    environment:
+      # You can add DB URL and other settings here later
+      - FASTAPI_ENV=development
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    container_name: sonoro-db
+    environment:
+      POSTGRES_DB: sonoro
+      POSTGRES_USER: sonoro
+      POSTGRES_PASSWORD: sonoro
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
