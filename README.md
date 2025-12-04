@@ -122,7 +122,7 @@ A full OpenAPI schema is available at:
 
 ## **Screenshots**
 
-_(Add later once UI is built)_
+_(Coming soon)_
 
 ---
 
