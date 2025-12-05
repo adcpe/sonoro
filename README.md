@@ -15,7 +15,7 @@ Sonoro aims to be clean, fast, and fully open-source.
 - Global play/pause
 - Curated preset mixes (e.g., _Rainy Café_, _Deep Focus_)
 - Responsive UI for desktop and mobile
-- Built with React + FastAPI
+- Full-stack app: React frontend + FastAPI backend
 
 ### **Planned**
 
@@ -37,92 +37,138 @@ Sonoro aims to be clean, fast, and fully open-source.
 - Vite + SWC
 - Context API for global audio state
 - HTML5 Audio / Web Audio API
-- CSS modules or Tailwind (depends on your choice)
+- CSS modules or Tailwind (TBD)
 
 ### **Backend**
 
 - FastAPI
 - Python 3.10+
-- PostgreSQL (prod), SQLite (dev)
 - Uvicorn
-- CORS configured for local dev
+- Postgres (via Docker, for development and later production)
+
+### **Dev & Infrastructure**
+
+- Docker + docker-compose (backend + Postgres)
+- pnpm for frontend dependency management
 
 ---
 
 ## **Project Structure**
 
-```
+```txt
 sonoro/
   frontend/           # React application
   backend/            # FastAPI application
+    app/
+    Dockerfile
+    requirements.txt
   docs/               # Notes, design docs, API specs
+  docker-compose.yml  # Backend + Postgres dev stack
   README.md
   .gitignore
+  LICENSE
 ```
 
 ---
 
-## **Development Setup**
-
-### **Prerequisites**
+## **Prerequisites**
 
 - Node.js + pnpm
-- Python 3.10+
-- Fish or Bash shell
-- (Optional) Docker for database
+- Python 3.10+ (for local backend dev if you don’t use Docker)
+- Docker
+- docker-compose
+
+You can either:
+
+- Run the backend directly with Python, or
+- Use Docker/docker-compose (recommended for development).
+
+---
+
+## **Running the Backend (Docker, recommended)**
+
+From the project root:
+
+```bash
+docker-compose up --build
+```
+
+This will start:
+
+- `sonoro-backend`: FastAPI app on `http://localhost:8000`
+- `sonoro-db`: Postgres database on `localhost:5432` (ready for use)
+
+The backend is available at:
+
+- `http://localhost:8000/api/v1/health`
+- `http://localhost:8000/api/v1/sounds`
+
+To stop:
+
+```bash
+# same terminal
+Ctrl+C
+
+# to remove containers (but keep DB data volume)
+docker-compose down
+```
+
+Because the backend code is mounted into the container, code changes under `backend/app` are reloaded automatically.
+
+---
+
+## **Running the Backend (without Docker, optional)**
+
+If you prefer to run the backend directly:
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate   # or activate.fish, etc.
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+The API will still be available at `http://localhost:8000`.
 
 ---
 
 ## **Running the Frontend**
 
+In another terminal:
+
 ```bash
 cd frontend
-pnpm install
+pnpm install   # first time only
 pnpm dev
 ```
 
 The app will be available at:
 **[http://localhost:5173](http://localhost:5173)**
 
----
-
-## **Running the Backend**
-
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate.fish   # or activate for your shell
-pip install "fastapi[standard]" uvicorn
-uvicorn app.main:app --reload --port 8000
-```
-
-API available at:
-**[http://localhost:8000](http://localhost:8000)**
-
-Example endpoint:
-`GET /api/v1/sounds`
+The frontend expects the backend at `http://localhost:8000` (whether via Docker or direct Uvicorn).
 
 ---
 
 ## **API Overview**
 
-| Endpoint                           | Method | Description                   |
-| ---------------------------------- | ------ | ----------------------------- |
-| `/api/v1/health`                   | GET    | API health check              |
-| `/api/v1/sounds`                   | GET    | List available ambient sounds |
-| `/api/v1/mixes/public`             | GET    | Public preset mixes           |
-| _(future)_ `/api/v1/auth/login`    | POST   | User login                    |
-| _(future)_ `/api/v1/auth/register` | POST   | User registration             |
-| _(future)_ `/api/v1/mixes/me`      | GET    | User’s custom mixes           |
+| Endpoint                           | Method | Description         |
+| ---------------------------------- | ------ | ------------------- |
+| `/api/v1/health`                   | GET    | API health check    |
+| `/api/v1/sounds`                   | GET    | List ambient sounds |
+| `/api/v1/mixes/public`             | GET    | Public preset mixes |
+| _(future)_ `/api/v1/auth/login`    | POST   | User login          |
+| _(future)_ `/api/v1/auth/register` | POST   | User registration   |
+| _(future)_ `/api/v1/mixes/me`      | GET    | User’s custom mixes |
 
-A full OpenAPI schema is available at:
+Interactive API docs (OpenAPI) at:
 **[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
 ## **Screenshots**
 
-_(Coming soon)_
+_(To be added once the UI is implemented.)_
 
 ---
 
@@ -132,6 +178,7 @@ _(Coming soon)_
 - [ ] Add volume controls & global mixer
 - [ ] Add preset mixes
 - [ ] Add focus timer
+- [ ] Connect backend to Postgres
 - [ ] Add user authentication
 - [ ] Add custom mix creation & saving
 - [ ] Polish UI & animations
@@ -149,4 +196,4 @@ Feel free to open an issue for ideas or improvements.
 
 ## **License**
 
-MIT License — free to use and modify.
+MIT License — see [`LICENSE`](./LICENSE).
