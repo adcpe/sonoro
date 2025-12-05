@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  background: #050810;
+  color: #f7fafc;
+}
+
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.navbar-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  font-weight: 600;
+  text-decoration: none;
+  color: #f7fafc;
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: #a0aec0;
+}
+
+.navbar-link.active {
+  color: #fff;
+  border-bottom: 2px solid #38b2ac;
+}
+
+.app-main {
+  flex: 1;
+}
+
+.home-layout {
+  max-width: 1080px;
+  margin: 1.5rem auto;
+  padding: 0 1.5rem 2rem;
+}
+
+.home-main {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr;
+  gap: 1.5rem;
+}
+
+/* Stack on small screens */
+@media (max-width: 768px) {
+  .home-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.current-mix,
+.timer {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(8, 12, 24, 0.95);
+}
