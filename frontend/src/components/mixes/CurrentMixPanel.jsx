@@ -2,7 +2,7 @@ import './CurrentMixPanel.css'
 import { useAudio } from '../../context/AudioContext.jsx'
 
 function CurrentMixPanel() {
-  const { sounds, activeSoundIds, clearAll } = useAudio()
+  const { sounds, activeSoundIds, volumes, clearAll, setVolume } = useAudio()
 
   const activeSounds = sounds.filter((s) => activeSoundIds.includes(s.id))
 
@@ -23,13 +23,27 @@ function CurrentMixPanel() {
         </p>
       ) : (
         <ul className='current-mix-list'>
-          {activeSounds.map((sound) => (
-            <li key={sound.id} className='current-mix-item'>
-              <span className='current-mix-name'>{sound.label}</span>
-              {/* Placeholder for future volume slider */}
-              <span className='current-mix-volume'>Volume: 100%</span>
-            </li>
-          ))}
+          {activeSounds.map((sound) => {
+            const vol = volumes[sound.id] ?? 1
+            const volPercent = Math.round(vol * 100)
+
+            return (
+              <li key={sound.id} className='current-mix-item'>
+                <div className='current-mix-info'>
+                  <span className='current-mix-name'>{sound.label}</span>
+                  <span className='current-mix-volume-label'>{volPercent}%</span>
+                </div>
+                <input
+                  type='range'
+                  min='0'
+                  max='100'
+                  value={volPercent}
+                  className='current-mix-slider'
+                  onChange={(e) => setVolume(sound.id, Number(e.target.value) / 100)}
+                />
+              </li>
+            )
+          })}
         </ul>
       )}
     </section>

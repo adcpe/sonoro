@@ -11,9 +11,17 @@ const INITIAL_SOUNDS = [
   { id: 'night', label: 'Night' },
 ]
 
-export function AudioProvider({children}) {
+export function AudioProvider({ children }) {
   const [sounds] = useState(INITIAL_SOUNDS)
   const [activeSoundIds, setActiveSoundIds] = useState([])
+
+  const [volumes, setVolumes] = useState(() => {
+    const initial = {}
+    INITIAL_SOUNDS.forEach((sound) => {
+      initial[sound.id] = sound.defaultVolume ?? 1
+    })
+    return initial
+  })
 
   function toggleSound(id) {
     setActiveSoundIds((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]))
@@ -23,14 +31,24 @@ export function AudioProvider({children}) {
     setActiveSoundIds([])
   }
 
+  function setVolume(id, volume) {
+    // volume: 0-1
+    setVolumes((prev) => ({
+      ...prev,
+      [id]: Math.min(1, Math.max(0, volume)),
+    }))
+  }
+
   const value = useMemo(
     () => ({
       sounds,
       activeSoundIds,
+      volumes,
       toggleSound,
       clearAll,
+      setVolume,
     }),
-    [sounds, activeSoundIds],
+    [sounds, activeSoundIds, volumes],
   )
 
   return <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
